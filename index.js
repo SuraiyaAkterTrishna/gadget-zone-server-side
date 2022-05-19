@@ -31,6 +31,27 @@ async function run(){
             res.send(item);
         });
 
+        // update item
+        app.put('/item/:id', async(req, res) =>{
+            const id = req.params.id;
+            const updateItem = req.body;
+            console.log(id);
+            const filter = {_id: ObjectId(id)};
+            const options = { upsert: true};
+            const updateDoc = {
+                $set: {
+                    name: updateItem.name,
+                    image: updateItem.image,
+                    description: updateItem.description,
+                    price: updateItem.price,
+                    quantity: updateItem.quantity,
+                    supplierName: updateItem.supplierName
+                }
+            };
+            const result = await itemCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+        });
+
         app.get('/item/:id', async(req, res) =>{
             const id = req.params.id;
             const query = {_id: ObjectId(id)};
@@ -41,12 +62,6 @@ async function run(){
     finally{}
 }
 run().catch(console.dir);
-// client.connect(err => {
-//   const collection = client.db("warehouse").collection("product");
-//   // perform actions on the collection object
-//   console.log('Mongo is connected');
-//   client.close();
-// });
 
 
 app.get('/', (req, res) => {
