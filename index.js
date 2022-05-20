@@ -18,12 +18,14 @@ async function run(){
         await client.connect();
         const itemCollection = client.db('warehouseData1').collection('item');
 
+        // create item
         app.post('/item', async (req, res)=>{
             const item = req.body;
             const result = await itemCollection.insertOne(item);
             res.send(result);
         });
 
+        // get item
         app.get('/item', async(req, res)=>{
             const query = {};
             const cursor = itemCollection.find(query);
@@ -55,8 +57,16 @@ async function run(){
         app.get('/item/:id', async(req, res) =>{
             const id = req.params.id;
             const query = {_id: ObjectId(id)};
-            const item = await itemCollection.findOne(query);
-            res.send(item);
+            const result = await itemCollection.findOne(query);
+            res.send(result);
+        })
+
+        // delete item
+        app.delete('/item/:id', async(req, res) =>{
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await itemCollection.deleteOne(query);
+            res.send(result);
         })
     }
     finally{}
