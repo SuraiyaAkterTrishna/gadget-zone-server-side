@@ -25,6 +25,15 @@ async function run(){
             res.send(result);
         });
 
+        // item collection api
+        app.get('/my-item', async(req, res)=>{
+            const email = req.query.email;
+            const query = {email: email};
+            const cursor = itemCollection.find(query);
+            const items = await cursor.toArray();
+            res.send(items);
+        });
+
         // get item
         app.get('/item', async(req, res)=>{
             const query = {};
@@ -37,7 +46,6 @@ async function run(){
         app.put('/item/:id', async(req, res) =>{
             const id = req.params.id;
             const updateItem = req.body;
-            console.log(id);
             const filter = {_id: ObjectId(id)};
             const options = { upsert: true};
             const updateDoc = {
@@ -68,6 +76,8 @@ async function run(){
             const result = await itemCollection.deleteOne(query);
             res.send(result);
         })
+
+        
     }
     finally{}
 }
